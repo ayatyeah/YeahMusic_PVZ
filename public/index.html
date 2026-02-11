@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="color-scheme" content="dark light">
+    <title>YeahMusic</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="diamond-bg"></div>
+
+<div id="app">
+    <header class="glass-header">
+        <div class="logo" onclick="navigateHome()">YeahMusic</div>
+        <div class="header-right">
+            <div id="auth-btn" class="auth-pill" onclick="openModal('auth-modal')">Sign In</div>
+            <div id="user-avatar" class="user-avatar hidden" onclick="openModal('profile-modal')">U</div>
+        </div>
+    </header>
+
+    <main id="main-view" class="main-content"></main>
+
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-nav="home" onclick="navigateHome()"><i data-lucide="home"></i></button>
+        <button class="nav-item" data-nav="search" onclick="navigateSearch()"><i data-lucide="search"></i></button>
+        <button class="nav-item" data-nav="library" onclick="navigateLibrary()"><i data-lucide="library"></i></button>
+        <button class="nav-item" data-nav="suno" onclick="navigateSuno()"><i data-lucide="sparkles"></i></button>
+    </nav>
+
+    <div id="mini-player" class="mini-player hidden" onclick="openFullPlayer()">
+        <img id="mp-cover" src="">
+        <div class="mp-info">
+            <span id="mp-title">Title</span>
+            <span id="mp-artist">Artist</span>
+        </div>
+        <div class="mp-controls" onclick="event.stopPropagation()">
+            <button class="mp-btn" onclick="prevTrack()"><i data-lucide="skip-back"></i></button>
+            <button class="mp-btn mp-btn-main" onclick="togglePlay()" id="mp-play"><i data-lucide="play"></i></button>
+            <button class="mp-btn" onclick="nextTrack()"><i data-lucide="skip-forward"></i></button>
+        </div>
+        <div class="mp-progress-bar"><div id="mp-fill" class="mp-fill"></div></div>
+    </div>
+
+    <div id="full-player" class="full-player hidden">
+        <div class="fp-backdrop">
+            <img id="fp-bg" src="">
+        </div>
+
+        <div class="fp-content">
+            <div class="fp-top">
+                <button class="icon-btn" onclick="closeFullPlayer()"><i data-lucide="chevron-down"></i></button>
+                <span class="fp-header-title">Now Playing</span>
+                <button class="icon-btn" onclick="openAddToPlaylist()"><i data-lucide="list-plus"></i></button>
+            </div>
+
+            <div class="fp-art-container">
+                <img id="fp-cover" src="" class="fp-art">
+            </div>
+
+            <div class="fp-info-block">
+                <h2 id="fp-title">Song Title</h2>
+                <p id="fp-artist">Artist Name</p>
+            </div>
+
+            <div class="fp-timeline-block">
+                <input type="range" id="fp-seek" value="0" min="0" step="0.1">
+                <div class="fp-times">
+                    <span id="fp-curr">0:00</span>
+                    <span id="fp-dur">0:00</span>
+                </div>
+            </div>
+
+            <div class="fp-controls-block">
+                <button onclick="toggleLyricsPage()" class="glass-btn"><i data-lucide="align-left"></i></button>
+                <div class="fp-right-controls">
+                    <button onclick="prevTrack()" class="glass-btn"><i data-lucide="skip-back"></i></button>
+                    <button onclick="togglePlay()" class="fp-btn-play"><i id="fp-play-icon" data-lucide="play"></i></button>
+                    <button onclick="nextTrack()" class="glass-btn"><i data-lucide="skip-forward"></i></button>
+                </div>
+                <button onclick="toggleLoop()" id="fp-loop" class="glass-btn"><i data-lucide="repeat"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="lyrics-overlay" class="full-player hidden" style="z-index: 210;">
+        <div class="fp-backdrop"><img id="lyric-bg" src="" style="opacity: 0.28;"></div>
+        <div class="fp-content h-full">
+            <div class="fp-top">
+                <button onclick="toggleLyricsPage()" class="icon-btn"><i data-lucide="chevron-down"></i></button>
+                <span class="fp-header-title">Lyrics</span>
+                <div style="width: 44px;"></div>
+            </div>
+            <div id="lyrics-container"></div>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modal hidden">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h2 class="modal-title">Profile</h2>
+                <button class="icon-btn" onclick="closeModal('profile-modal')"><i data-lucide="x"></i></button>
+            </div>
+            <div class="profile-top">
+                <div class="big-avatar" id="p-avatar">U</div>
+                <div class="p-meta">
+                    <div class="p-name" id="p-name">User</div>
+                    <div class="p-email" id="p-email">email@example.com</div>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <button onclick="openStats()" class="glass-primary">Platform Stats</button>
+                <button onclick="navigateEditProfile()" class="glass-ghost">Edit Profile</button>
+
+                <button onclick="toggleTheme()" class="glass-ghost theme-switch">
+                    <i data-lucide="sun-moon"></i> Switch Theme
+                </button>
+
+                <button onclick="logout()" class="danger-btn">Log Out</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="stats-modal" class="modal hidden">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h2 class="modal-title">Statistics</h2>
+                <button class="icon-btn" onclick="closeModal('stats-modal')"><i data-lucide="x"></i></button>
+            </div>
+            <div id="stats-content" class="stats-wrap"></div>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h2 class="modal-title">Welcome</h2>
+                <button class="icon-btn" onclick="closeModal('auth-modal')"><i data-lucide="x"></i></button>
+            </div>
+            <form id="auth-form" class="modal-form">
+                <input type="text" name="name" placeholder="Name" class="glass-input">
+                <select name="role" class="glass-input">
+                    <option value="user">Listener</option>
+                    <option value="artist">Artist</option>
+                </select>
+                <input type="email" name="email" placeholder="Email" required class="glass-input">
+                <input type="password" name="password" placeholder="Password" required class="glass-input">
+                <div class="row">
+                    <button type="button" onclick="doAuth('login')" class="glass-ghost">Log In</button>
+                    <button type="button" onclick="doAuth('register')" class="glass-primary">Sign Up</button>
+                </div>
+            </form>
+            <div id="auth-error" class="hidden auth-error"></div>
+        </div>
+    </div>
+
+    <div id="add-modal" class="modal hidden">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h2 id="add-modal-title" class="modal-title">Add to Playlist</h2>
+                <button class="icon-btn" onclick="closeModal('add-modal')"><i data-lucide="x"></i></button>
+            </div>
+            <div id="user-playlists-list" class="stack"></div>
+        </div>
+    </div>
+</div>
+
+<audio id="audio"></audio>
+<script src="js/app.js"></script>
+
+<script>
+    (function(){
+        const saved = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', saved);
+    })();
+    function toggleTheme(){
+        const body = document.body;
+        const current = body.getAttribute('data-theme') || 'dark';
+        const next = current === 'light' ? 'dark' : 'light';
+        body.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        if (window.lucide) lucide.createIcons();
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "balmagambetaat@gmail.com",
+      "name": "ayat",
+      "role": "artist",
+      "created_at": "2026-02-06T00:01:08.3314966+05:00"
+    }
+  ],
+  "sessions": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "token": "15d2d8c457e0430142e16e9a62f95bec",
+      "expires_at": "2026-02-07T00:01:10.3675193+05:00",
+      "created_at": "2026-02-06T00:01:10.3675193+05:00"
+    }
+  ],
+  "artists": [
+    {
+      "id": 1,
+      "name": "OG Buda",
+      "bio": "Demo artist"
+    },
+    {
+      "id": 2,
+      "name": "Ernar Beats",
+      "bio": "Demo artist"
+    }
+  ],
+  "albums": [
+    {
+      "id": 2,
+      "artist_id": 2,
+      "title": "Скучаю но Ещё Работаю",
+      "cover_url": "https://via.placeholder.com/300",
+      "release_year": 2025
+    },
+    {
+      "id": 1,
+      "artist_id": 1,
+      "title": "Скучаю но Работаю",
+      "cover_url": "https://via.placeholder.com/300",
+      "release_year": 2023
+    }
+  ],
+  "tracks": [
+    {
+      "id": 1,
+      "album_id": 1,
+      "title": "Ссора Я",
+      "artist_name": "OG Buda",
+      "duration_sec": 180,
+      "audio_url": "/audio/1.mp3",
+      "cover_url": "https://via.placeholder.com/300",
+      "lyrics": "Lyrics here..."
+    },
+    {
+      "id": 2,
+      "album_id": 1,
+      "title": "Вода",
+      "artist_name": "OG Buda",
+      "duration_sec": 210,
+      "audio_url": "/audio/2.mp3",
+      "cover_url": "https://via.placeholder.com/300",
+      "lyrics": "Na na na"
+    },
+    {
+      "id": 3,
+      "album_id": 2,
+      "title": "Всё Норм",
+      "artist_name": "Ernar Beats",
+      "duration_sec": 200,
+      "audio_url": "/audio/3.mp3",
+      "cover_url": "https://via.placeholder.com/300",
+      "lyrics": ""
+    }
+  ],
+  "playlists": [],
+  "playlist_tracks": []
+}
