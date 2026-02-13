@@ -91,10 +91,15 @@ type geminiResp struct {
 }
 
 func main() {
-	_ = os.MkdirAll("public/uploads", 0755)
 	loadDotEnv(".env")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	uploadDir := strings.TrimSpace(os.Getenv("UPLOAD_DIR"))
+	if uploadDir == "" {
+		uploadDir = "public/uploads"
+	}
+	_ = os.MkdirAll(uploadDir, 0755)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel()
 
 	var err error
@@ -131,8 +136,13 @@ func main() {
 	fs := http.FileServer(http.Dir("./public"))
 	http.Handle("/", fs)
 
-	fmt.Println("Server running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	port := strings.TrimSpace(os.Getenv("PORT"))
+	if port == "" {
+		port = "8080"
+	}
+
+	fmt.Println("Server running on :" + port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func getMongoURI() string {
@@ -147,6 +157,14 @@ func getMongoDBName() string {
 		return v
 	}
 	return "YeahMusicDiamond"
+}
+
+func getUploadDir() string {
+	v := strings.TrimSpace(os.Getenv("UPLOAD_DIR"))
+	if v == "" {
+		return "public/uploads"
+	}
+	return v
 }
 
 func loadDotEnv(path string) {
@@ -734,7 +752,15 @@ func uploadTrackHandler(w http.ResponseWriter, r *http.Request) {
 
 	ext := filepath.Ext(header.Filename)
 	name := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
-	dst, _ := os.Create("public/uploads/" + name)
+
+	uploadDir := getUploadDir()
+	_ = os.MkdirAll(uploadDir, 0755)
+
+	dst, err := os.Create(filepath.Join(uploadDir, name))
+	if err != nil {
+		http.Error(w, "cannot save file", 500)
+		return
+	}
 	_, _ = io.Copy(dst, file)
 	_ = dst.Close()
 
@@ -945,7 +971,10 @@ func saveFile(r *http.Request, key string) string {
 	ext := filepath.Ext(header.Filename)
 	name := fmt.Sprintf("%d_img%s", time.Now().UnixNano(), ext)
 
-	dst, err := os.Create("public/uploads/" + name)
+	uploadDir := getUploadDir()
+	_ = os.MkdirAll(uploadDir, 0755)
+
+	dst, err := os.Create(filepath.Join(uploadDir, name))
 	if err != nil {
 		return ""
 	}
