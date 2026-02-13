@@ -26,7 +26,7 @@ var db *mongo.Database
 type User struct {
 	ID       primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Email    string             `bson:"email" json:"email"`
-	Password string             `bson:"password" json:"-"`
+	Password string             `bson:"password" json:"password"`
 	Name     string             `bson:"name" json:"name"`
 	Bio      string             `bson:"bio" json:"bio"`
 	Role     string             `bson:"role" json:"role"`
@@ -636,7 +636,14 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Server error", 500)
 		return
 	}
-	jsonOut(w, 200, u)
+	jsonOut(w, 200, map[string]any{
+		"id":    u.ID.Hex(),
+		"email": u.Email,
+		"name":  u.Name,
+		"bio":   u.Bio,
+		"role":  u.Role,
+	})
+
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -662,7 +669,14 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid password", 401)
 		return
 	}
-	jsonOut(w, 200, u)
+	jsonOut(w, 200, map[string]any{
+		"id":    u.ID.Hex(),
+		"email": u.Email,
+		"name":  u.Name,
+		"bio":   u.Bio,
+		"role":  u.Role,
+	})
+
 }
 
 func updateProfileHandler(w http.ResponseWriter, r *http.Request) {
